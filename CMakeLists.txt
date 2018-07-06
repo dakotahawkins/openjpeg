@@ -328,14 +328,25 @@ endif()
 
 #-----------------------------------------------------------------------------
 # install all targets referenced as OPENJPEGTargets
-install(EXPORT OpenJPEGTargets DESTINATION ${OPENJPEG_INSTALL_PACKAGE_DIR})
-configure_file( ${${OPENJPEG_NAMESPACE}_SOURCE_DIR}/cmake/OpenJPEGConfig.cmake.in
-  ${${OPENJPEG_NAMESPACE}_BINARY_DIR}/OpenJPEGConfig.cmake
-  @ONLY
-)
-install( FILES ${OPENJPEG_BINARY_DIR}/OpenJPEGConfig.cmake
-  DESTINATION ${OPENJPEG_INSTALL_PACKAGE_DIR}
-)
+install(EXPORT OpenJPEGTargets
+  DESTINATION ${OPENJPEG_INSTALL_PACKAGE_DIR})
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+  "${${OPENJPEG_NAMESPACE}_SOURCE_DIR}/cmake/OpenJPEGConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/OpenJPEGConfig.cmake"
+  INSTALL_DESTINATION "${OPENJPEG_INSTALL_PACKAGE_DIR}")
+
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenJPEGConfigVersion.cmake
+  VERSION "${OPENJPEG_VERSION}"
+  COMPATIBILITY SameMajorVersion)
+
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenJPEGConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenJPEGConfigVersion.cmake
+  DESTINATION "${OPENJPEG_INSTALL_PACKAGE_DIR}")
 
 #-----------------------------------------------------------------------------
 # install CHANGES and LICENSE
